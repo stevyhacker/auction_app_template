@@ -3,29 +3,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/all_auctions"
             android:icon="@drawable/ic_menu_camera"
             android:title="All Auctions"/>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/add_auction"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Add Items"/>
+            android:title="Add Auction"/>
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/log_out"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Options"/>
+            android:title="Log out"/>
     </group>
 
     <item android:title="My Bids">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/active_bids"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Active Bids"/>
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/won_auctions"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Won Items"/>
+                android:title="Won Auctions"/>
         </menu>
     </item>
 

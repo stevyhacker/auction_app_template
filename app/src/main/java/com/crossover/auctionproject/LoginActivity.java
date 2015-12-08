@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         progressView = findViewById(R.id.login_progress);
 
 
-        if(!prefs.getString("currentUser","Username").equalsIgnoreCase("Username")){
+        if(!prefs.getString("currentUser","noUser").equalsIgnoreCase("noUser")){
             finish();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);

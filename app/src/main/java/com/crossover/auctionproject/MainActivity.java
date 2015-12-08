@@ -1,17 +1,21 @@
 package com.crossover.auctionproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     private DatabaseAdapter db;
     PreferencesHelper prefs;
+    AlertDialog.Builder addAuctionDialogBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +37,46 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        addAuctionDialogBuilder = new AlertDialog.Builder(this);
+        addAuctionDialogBuilder.setTitle("Add item");
+        addAuctionDialogBuilder.setMessage("Enter your auction details:");
+        addAuctionDialogBuilder.setPositiveButton("Save", null);
+        addAuctionDialogBuilder.setNegativeButton("Cancel", null);
+
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        params.setMargins(50, 15, 50, 15);
+        ll.setLayoutParams(params);
+
+        EditText startPriceEditText = new EditText(this);
+        startPriceEditText.setHint("Starting price:");
+        startPriceEditText.setGravity(Gravity.CENTER);
+
+        EditText timeEditText = new EditText(this);
+        timeEditText.setHint("Time active:");
+        timeEditText.setGravity(Gravity.CENTER);
+
+        EditText nameEditText = new EditText(this);
+        nameEditText.setHint("Item name:");
+        nameEditText.setGravity(Gravity.CENTER);
+
+        ll.addView(nameEditText, params);
+        ll.addView(startPriceEditText, params);
+        ll.addView(timeEditText, params);
+
+        addAuctionDialogBuilder.setView(ll);
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addAuctionDialogBuilder.show();
+
             }
         });
 
@@ -92,21 +132,27 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.all_auctions) {
+        } else if (id == R.id.add_auction) {
 
-        }  else if (id == R.id.nav_manage) {
+            addAuctionDialogBuilder.show();
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.log_out) {
 
-        } else if (id == R.id.nav_send) {
+            prefs.putString("currentUser", "noUser");
+            finish();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+
+
+        } else if (id == R.id.active_bids) {
+
+        } else if (id == R.id.won_auctions) {
 
         }
 
@@ -114,8 +160,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public UserItem getCurrentUser(){
-        UserItem user = db.getUserItem(prefs.getString("currentUser","Username"));
+    public UserItem getCurrentUser() {
+        UserItem user = db.getUserItem(prefs.getString("currentUser", "noUser"));
 
         return user;
     }
