@@ -14,11 +14,14 @@
         completions."
     </string>
     <string name="prompt_username">Username</string>
-    <string name="error_incorrect_data">Check your input again.</string>
+    <string name="error_incorrect_data">Check all your input details again.</string>
     <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="item_name">Item name:</string>
+    <string name="starting_price">Starting price:</string>
+    <string name="days_active">Days active:</string>
 </resources>

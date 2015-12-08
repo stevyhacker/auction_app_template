@@ -1,5 +1,7 @@
 package com.crossover.auctionproject;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,11 +12,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.crossover.auctionproject.database.DatabaseAdapter;
@@ -25,7 +26,9 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     private DatabaseAdapter db;
     PreferencesHelper prefs;
+    android.support.v7.app.AlertDialog addAuctionDialog;
     AlertDialog.Builder addAuctionDialogBuilder;
+    LinearLayout ll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,49 +37,67 @@ public class MainActivity extends AppCompatActivity
 
         db = new DatabaseAdapter(this);
         prefs = new PreferencesHelper(this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        View addAuctionView = inflater.inflate(R.layout.add_auction_dialog_layout, null);
+
         addAuctionDialogBuilder = new AlertDialog.Builder(this);
-        addAuctionDialogBuilder.setTitle("Add item");
+        addAuctionDialogBuilder.setTitle("Add item for auction"); //todo SAVE TO STRINGS.XML
         addAuctionDialogBuilder.setMessage("Enter your auction details:");
-        addAuctionDialogBuilder.setPositiveButton("Save", null);
-        addAuctionDialogBuilder.setNegativeButton("Cancel", null);
+        addAuctionDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        addAuctionDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
 
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        params.setMargins(50, 15, 50, 15);
-        ll.setLayoutParams(params);
+        addAuctionDialogBuilder.setView(addAuctionView, 0, 0, 0, 0);
 
-        EditText startPriceEditText = new EditText(this);
-        startPriceEditText.setHint("Starting price:");
-        startPriceEditText.setGravity(Gravity.CENTER);
+        addAuctionDialog = addAuctionDialogBuilder.create();
+//
+//        ll = new LinearLayout(this);
+//        ll.setOrientation(LinearLayout.VERTICAL);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT
+//        );
+//        params.setMargins(50, 15, 50, 15);
+//        ll.setLayoutParams(params);
+//
+//        EditText startPriceEditText = new EditText(this);
+//        startPriceEditText.setHint("Starting price:");
+//        startPriceEditText.setGravity(Gravity.CENTER);
+//
+//        EditText timeEditText = new EditText(this);
+//        timeEditText.setHint("Time active:");
+//        timeEditText.setGravity(Gravity.CENTER);
+//
+//        EditText nameEditText = new EditText(this);
+//        nameEditText.setHint("Item name:");
+//        nameEditText.setGravity(Gravity.CENTER);
+//
+//        ll.addView(nameEditText, params);
+//        ll.addView(startPriceEditText, params);
+//        ll.addView(timeEditText, params);
 
-        EditText timeEditText = new EditText(this);
-        timeEditText.setHint("Time active:");
-        timeEditText.setGravity(Gravity.CENTER);
-
-        EditText nameEditText = new EditText(this);
-        nameEditText.setHint("Item name:");
-        nameEditText.setGravity(Gravity.CENTER);
-
-        ll.addView(nameEditText, params);
-        ll.addView(startPriceEditText, params);
-        ll.addView(timeEditText, params);
-
-        addAuctionDialogBuilder.setView(ll);
+//        addAuctionDialogBuilder.setView(ll);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addAuctionDialogBuilder.show();
-
+                addAuctionDialog.show();
             }
         });
 
@@ -140,7 +161,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.all_auctions) {
         } else if (id == R.id.add_auction) {
 
-            addAuctionDialogBuilder.show();
+           addAuctionDialog.show();
+
 
         } else if (id == R.id.log_out) {
 
