@@ -3,21 +3,21 @@ package com.crossover.auctionproject;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build.VERSION;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -28,6 +28,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.crossover.auctionproject.database.DatabaseAdapter;
+import com.crossover.auctionproject.database.UserItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +54,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // UI references.
     private AutoCompleteTextView emailView;
+    private AutoCompleteTextView usernameView;
     private EditText passwordView;
     private View progressView;
     private View loginFormView;
+    private DatabaseAdapter db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        db = new DatabaseAdapter(this);
+
         // Set up the login form.
+        usernameView = (AutoCompleteTextView) findViewById(R.id.username);
         emailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -85,6 +94,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
+
+
     }
 
     private void populateAutoComplete() {
@@ -148,18 +159,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Reset errors.
+        usernameView.setError(null);
         emailView.setError(null);
         passwordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String username = usernameView.getText().toString();
         String email = emailView.getText().toString();
         String password = passwordView.getText().toString();
+
+        UserItem newUser = new UserItem();
+        newUser.username = username;
+        newUser.password = password;
+        newUser.email = email;
+
+        db.addUserItem(newUser);
+
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        // Check for a valid username
+        if (TextUtils.isEmpty(username)) {
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = usernameView;
+            cancel = true;
+        }
+
+
+        // Check for a valid password
+        if (TextUtils.isEmpty(password)) {
+            passwordView.setError(getString(R.string.error_field_required));
+            focusView = passwordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
             passwordView.setError(getString(R.string.error_invalid_password));
             focusView = passwordView;
             cancel = true;
@@ -184,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(username, email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -322,27 +355,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String username;
         private final String email;
         private final String password;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String username, String email, String password) {
+            this.username = username;
             this.email = email;
             this.password = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            //TODO CHECK DATABASE IF THE CREDENTIALS EXIST IF NOT REGISTER NEW USER
 
-            for (String credential : CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(email)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(password);
-                }
+            //Checks if the user already exists
+            if(db.getUserItem(username)!=null){
+                    return true;
             }
 
-            // TODO: register the new account here.
+
+            UserItem newUser = new UserItem();
+            newUser.username = username;
+            newUser.password = password;
+            newUser.email = email;
+
+            db.addUserItem(newUser);
+
             return true;
         }
 

@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 
 
     // SQL Statement to create a new database.
-    static final String USER_TABLE_CREATE = "CREATE TABLE" + USERS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_USERNAME + " TEXT, EMAIL TEXT, PASSWORD TEXT);";
+    static final String USER_TABLE_CREATE = "CREATE TABLE " + USERS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_USERNAME + " TEXT, EMAIL TEXT, PASSWORD TEXT);";
 
     // Variable to hold the database instance
     public SQLiteDatabase db;
@@ -37,16 +37,14 @@ public class DatabaseAdapter {
     }
 
 
-    public void close() {
-        db.close();
-    }
-
     public SQLiteDatabase getDatabaseInstance() {
         return db;
     }
 
 
     public void addUserItem(UserItem user) {
+        db = dbHelper.getWritableDatabase();
+
         ContentValues newValues = new ContentValues();
         // Assign values for each row.
         newValues.put(USERS_USERNAME, user.username);
@@ -55,15 +53,20 @@ public class DatabaseAdapter {
 
         // Insert the row into your table
         db.insert(USERS_TABLE, null, newValues);
+
+        db.close();
     }
 
     public void deleteUserItem(String UserName) {
+        db = dbHelper.getWritableDatabase();
+
         String where = USERS_USERNAME + "=?";
         db.delete(USERS_TABLE, where, new String[]{UserName});
-
+        db.close();
     }
 
     public UserItem getUserItem(String userName) {
+        db = dbHelper.getReadableDatabase();
         UserItem user = new UserItem();
         user.username = userName;
         Cursor cursor = db.query(USERS_TABLE, null, " " + USERS_USERNAME + " =?", new String[]{userName}, null, null, null);
@@ -79,11 +82,13 @@ public class DatabaseAdapter {
         user.password = cursor.getString(cursor.getColumnIndex(USERS_PASSWORD));
 
         cursor.close();
-
+        db.close();
         return user;
     }
 
     public Boolean checkEntry(String userName) {
+        db = dbHelper.getReadableDatabase();
+
         Cursor cursor = db.query(USERS_TABLE, null, " " + USERS_USERNAME + " =?", new String[]{userName}, null, null, null);
         if (cursor.getCount() < 1) // UserName Not Exist
         {
@@ -92,10 +97,13 @@ public class DatabaseAdapter {
         }
 
         cursor.close();
+        db.close();
         return true;
     }
 
     public void updateUserItem(String userName, String email, String password) {
+        db = dbHelper.getWritableDatabase();
+
         // Define the updated row content.
         ContentValues updatedValues = new ContentValues();
         // Assign values for each row.
@@ -105,6 +113,8 @@ public class DatabaseAdapter {
 
         String where = USERS_USERNAME + " = ?";
         db.update(USERS_TABLE, updatedValues, where, new String[]{userName});
+
+        db.close();
     }
 
 

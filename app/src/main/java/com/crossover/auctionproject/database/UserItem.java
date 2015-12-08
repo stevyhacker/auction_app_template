@@ -5,8 +5,8 @@ package com.crossover.auctionproject.database;
  */
 public class UserItem {
 
-    int id;
-    String username,email,password;
+    public int id;
+    public String username,email,password;
 
 
     public UserItem(int id, String username, String email, String password){
