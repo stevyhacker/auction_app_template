@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View progressView;
     private View loginFormView;
     private DatabaseAdapter db;
+    PreferencesHelper prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
 
         db = new DatabaseAdapter(this);
-
+        prefs = new PreferencesHelper(this);
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
         emailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -95,6 +97,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
 
+
+        if(!prefs.getString("currentUser","Username").equalsIgnoreCase("Username")){
+            finish();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
     }
 
@@ -369,19 +377,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
 
             //Checks if the user already exists
-            if(db.getUserItem(username)!=null){
+            UserItem user = db.getUserItem(username);
+            if (user.username != null) {
+
+                if (user.username.equalsIgnoreCase(username) && user.email.equalsIgnoreCase(email) && user.password.equalsIgnoreCase(password)) {
+                    prefs.putString("currentUser", user.username);
                     return true;
+                } else {
+                    return false;
+                }
+
+            } else {
+
+                UserItem newUser = new UserItem();
+                newUser.username = username;
+                newUser.password = password;
+                newUser.email = email;
+
+                db.addUserItem(newUser);
+
+                prefs.putString("currentUser", newUser.username);
+
+                return true;
+
             }
-
-
-            UserItem newUser = new UserItem();
-            newUser.username = username;
-            newUser.password = password;
-            newUser.email = email;
-
-            db.addUserItem(newUser);
-
-            return true;
         }
 
         @Override
@@ -390,9 +409,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+
                 finish();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+
             } else {
-                passwordView.setError(getString(R.string.error_incorrect_password));
+
+                passwordView.setError(getString(R.string.error_incorrect_data));
                 passwordView.requestFocus();
             }
         }
@@ -403,5 +427,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
 }
 

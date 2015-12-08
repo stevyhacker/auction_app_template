@@ -41,6 +41,9 @@ public class DatabaseAdapter {
         return db;
     }
 
+    public void close(){
+        db.close();
+    }
 
     public void addUserItem(UserItem user) {
         db = dbHelper.getWritableDatabase();
