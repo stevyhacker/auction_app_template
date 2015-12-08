@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/itemNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
-            android:id="@+id/startingPriceText"
+        <EditText
+            android:id="@+id/startingPriceTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/starting_price"

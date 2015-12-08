@@ -12,23 +12,31 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
     DrawerLayout drawer;
     private DatabaseAdapter db;
     PreferencesHelper prefs;
     android.support.v7.app.AlertDialog addAuctionDialog;
     AlertDialog.Builder addAuctionDialogBuilder;
-    LinearLayout ll;
+     EditText itemNameTextView;
+     EditText daysActiveTextView;
+     EditText startingPriceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +52,40 @@ public class MainActivity extends AppCompatActivity
 
 
         View addAuctionView = inflater.inflate(R.layout.add_auction_dialog_layout, null);
+        startingPriceTextView = (EditText) addAuctionView.findViewById(R.id.startingPriceTextView);
+        itemNameTextView = (EditText) addAuctionView.findViewById(R.id.itemNameTextView);
+        daysActiveTextView = (EditText) addAuctionView.findViewById(R.id.timeTextView);
 
         addAuctionDialogBuilder = new AlertDialog.Builder(this);
         addAuctionDialogBuilder.setTitle("Add item for auction"); //todo SAVE TO STRINGS.XML
         addAuctionDialogBuilder.setMessage("Enter your auction details:");
-        addAuctionDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        addAuctionDialogBuilder.setCancelable(false);
+        addAuctionDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+
+                    AuctionItem auctionItem = new AuctionItem();
+                    auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                    auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                    auctionItem.name = itemNameTextView.getText().toString();
+                    auctionItem.created_by = getCurrentUser().username;
+                    db.addAuctionItem(auctionItem);
+
+                    dialog.dismiss();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
+                    addAuctionDialog.show();
+                }
             }
         });
         addAuctionDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                startingPriceTextView.setText("");
+                daysActiveTextView.setText("");
+                itemNameTextView.setText("");
                 dialog.cancel();
             }
         });
@@ -64,33 +93,6 @@ public class MainActivity extends AppCompatActivity
         addAuctionDialogBuilder.setView(addAuctionView, 0, 0, 0, 0);
 
         addAuctionDialog = addAuctionDialogBuilder.create();
-//
-//        ll = new LinearLayout(this);
-//        ll.setOrientation(LinearLayout.VERTICAL);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT
-//        );
-//        params.setMargins(50, 15, 50, 15);
-//        ll.setLayoutParams(params);
-//
-//        EditText startPriceEditText = new EditText(this);
-//        startPriceEditText.setHint("Starting price:");
-//        startPriceEditText.setGravity(Gravity.CENTER);
-//
-//        EditText timeEditText = new EditText(this);
-//        timeEditText.setHint("Time active:");
-//        timeEditText.setGravity(Gravity.CENTER);
-//
-//        EditText nameEditText = new EditText(this);
-//        nameEditText.setHint("Item name:");
-//        nameEditText.setGravity(Gravity.CENTER);
-//
-//        ll.addView(nameEditText, params);
-//        ll.addView(startPriceEditText, params);
-//        ll.addView(timeEditText, params);
-
-//        addAuctionDialogBuilder.setView(ll);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -98,6 +100,24 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 addAuctionDialog.show();
+                //Workaround for dialog data validation to override dialog dismissing
+                Button positiveButton = addAuctionDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+                            AuctionItem auctionItem = new AuctionItem();
+                            auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                            auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                            auctionItem.name = itemNameTextView.getText().toString();
+                            auctionItem.created_by = getCurrentUser().username;
+                            db.addAuctionItem(auctionItem);
+                            addAuctionDialog.dismiss();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -117,6 +137,8 @@ public class MainActivity extends AppCompatActivity
 //
 //        usernameTextView.setText(getCurrentUser().username);
 //        emailTextView.setText(getCurrentUser().email);
+
+//     Todo delete   Log.e("USERS DB", "UserItem email " +   getCurrentUser().email);
 
 
     }
@@ -161,8 +183,30 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.all_auctions) {
         } else if (id == R.id.add_auction) {
 
-           addAuctionDialog.show();
+            addAuctionDialog.show();
 
+            //Workaround for dialog data validation to override dialog dismissing
+            Button positiveButton = addAuctionDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+
+                        AuctionItem auctionItem = new AuctionItem();
+                        auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                        auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                        auctionItem.name = itemNameTextView.getText().toString();
+                        auctionItem.created_by = getCurrentUser().username;
+                        db.addAuctionItem(auctionItem);
+
+                        addAuctionDialog.dismiss();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
 
         } else if (id == R.id.log_out) {
 
