@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
-                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
                     auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
                             AuctionItem auctionItem = new AuctionItem();
                             auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                             auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
+                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
                         AuctionItem auctionItem = new AuctionItem();
                         auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                         auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());

@@ -18,16 +18,15 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/itemHighestBidderTextView"
+        android:id="@+id/timeLeftTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/montenegrin_name_text_view"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="10dp"
-        android:text="Highest Bidder: "
-        android:textSize="15sp"
-        />
+        android:text="Time left:"
+        android:textSize="16sp"
+        android:textStyle="italic"/>
 
     <TextView
         android:id="@+id/itemPriceTextView"
@@ -41,15 +40,17 @@
         android:textStyle="bold"
         />
 
-
     <TextView
-        android:id="@+id/timeLeftTextView"
+        android:id="@+id/itemHighestBidderTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/montenegrin_name_text_view"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="10dp"
-        android:text="Time left:"
-        android:textSize="16sp"
-        android:textStyle="italic"/>
+        android:text="Highest Bidder: "
+        android:textSize="15sp"
+        />
+
+
 </LinearLayout>

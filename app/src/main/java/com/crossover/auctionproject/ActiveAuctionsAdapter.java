@@ -57,9 +57,14 @@ public class ActiveAuctionsAdapter extends ArrayAdapter<AuctionItem> {
         AuctionItem auctionItem = (AuctionItem) this.auctionItems.get(position);
 
         viewHolder.itemName.setText(auctionItem.getName());
-        viewHolder.highestBidderTextView.setText(auctionItem.getHighest_bidder());
-        viewHolder.timeLeftTextView.setText(String.valueOf(auctionItem.getDays_active()));
-        viewHolder.priceTextView.setText(String.valueOf(auctionItem.getHighest_bid()));
+        if(auctionItem.highest_bidder.equalsIgnoreCase(auctionItem.created_by)){
+            viewHolder.highestBidderTextView.setText("Submitted by: " + auctionItem.getHighest_bidder());
+        }
+        else {
+            viewHolder.highestBidderTextView.setText("Highest bidder: " + auctionItem.getHighest_bidder());
+        }
+        viewHolder.timeLeftTextView.setText(String.valueOf(auctionItem.getDays_active()) + " days left");
+        viewHolder.priceTextView.setText(String.valueOf(auctionItem.getHighest_bid()) + " $");
 
 
         return view;
