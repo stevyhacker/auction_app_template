@@ -231,7 +231,7 @@ public class DatabaseAdapter {
         ArrayList<AuctionItem> activeAuctionsList = new ArrayList<AuctionItem>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_CREATED_BY + " != " + currentUser + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_CREATED_BY + " != '" + currentUser + "';", null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
