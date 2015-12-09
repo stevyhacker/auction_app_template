@@ -4,6 +4,7 @@ package com.crossover.auctionproject.app;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -65,14 +66,17 @@ public class ActiveAuctionsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final AuctionItem auctionItem = auctionItemList.get(position);
 
+
+                TextInputLayout inputTextLayout = new TextInputLayout(getActivity());
                 final EditText yourBidEditText = new EditText(getActivity());
                 yourBidEditText.setHint("Your bid: ");
                 yourBidEditText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                inputTextLayout.addView(yourBidEditText);
 
                 AlertDialog.Builder bidDialogBuilder = new AlertDialog.Builder(getActivity());
                 bidDialogBuilder.setTitle("Item: " + auctionItem.getName());
                 bidDialogBuilder.setMessage("Highest bid: " + auctionItem.getHighest_bid() + " $");
-                bidDialogBuilder.setView(yourBidEditText, 20, 10, 20, 10);
+                bidDialogBuilder.setView(inputTextLayout, 20, 10, 20, 10);
                 bidDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

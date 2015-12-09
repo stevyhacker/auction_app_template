@@ -125,7 +125,7 @@ public class DatabaseAdapter {
         cursor.moveToFirst();
 
         auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
-        auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
+        auction.starting_price = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
         auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
         auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
         auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
@@ -240,7 +240,7 @@ public class DatabaseAdapter {
 
                     auction.id = cursor.getInt(cursor.getColumnIndex("ID"));
                     auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
-                    auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
+                    auction.starting_price = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
                     auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
                     auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
                     auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));

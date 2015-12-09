@@ -69,12 +69,12 @@ public class MainActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
                 if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0
-                        && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
+                        && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
                     auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
-                    auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
-                    auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                    auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
+                    auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                     auctionItem.highest_bidder = getCurrentUser().username;
                     auctionItem.name = itemNameTextView.getText().toString();
                     auctionItem.created_by = getCurrentUser().username;
@@ -117,11 +117,11 @@ public class MainActivity extends AppCompatActivity
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
+                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
                             AuctionItem auctionItem = new AuctionItem();
                             auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
-                            auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
-                            auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                            auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
+                            auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                             auctionItem.highest_bidder = getCurrentUser().username;
                             auctionItem.name = itemNameTextView.getText().toString();
                             auctionItem.created_by = getCurrentUser().username;
@@ -229,11 +229,11 @@ public class MainActivity extends AppCompatActivity
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
+                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
                         AuctionItem auctionItem = new AuctionItem();
                         auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
-                        auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
-                        auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                        auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
+                        auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                         auctionItem.highest_bidder = getCurrentUser().username;
                         auctionItem.name = itemNameTextView.getText().toString();
                         auctionItem.created_by = getCurrentUser().username;
