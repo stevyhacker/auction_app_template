@@ -127,7 +127,7 @@ public class DatabaseAdapter {
         auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
         auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
         auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
-        auction.highest_bid = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
+        auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
         auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
         auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
 
@@ -186,8 +186,8 @@ public class DatabaseAdapter {
         newValues.put(AUCTIONS_DAYS_ACTIVE, auction.days_active);
 
 
-        String where = "ID" + " = ?";
-        db.update(USERS_TABLE, newValues, where, new String[]{String.valueOf(auction.id)});
+        String where = "ID" + " =?";
+        db.update(AUCTIONS_TABLE, newValues, where, new String[]{String.valueOf(auction.id)});
 
         db.close();
     }
@@ -242,7 +242,7 @@ public class DatabaseAdapter {
                     auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
                     auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
                     auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
-                    auction.highest_bid = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
+                    auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
                     auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
                     auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
 

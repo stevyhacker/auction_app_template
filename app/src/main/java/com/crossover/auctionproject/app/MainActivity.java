@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crossover.auctionproject.R;
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity
                     db.addAuctionItem(auctionItem);
 
 
-                    Toast.makeText(getApplicationContext(),"Auction submitted successfully.",Toast.LENGTH_SHORT);
                     startingPriceTextView.setText("");
                     daysActiveTextView.setText("");
                     itemNameTextView.setText("");
@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity
                             auctionItem.name = itemNameTextView.getText().toString();
                             auctionItem.created_by = getCurrentUser().username;
                             db.addAuctionItem(auctionItem);
-                            Toast.makeText(getApplicationContext(), "Auction submitted successfully.", Toast.LENGTH_SHORT);
 
                             startingPriceTextView.setText("");
                             daysActiveTextView.setText("");
@@ -149,13 +148,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header = navigationView.getHeaderView(0);
 
-//        TextView usernameTextView = (TextView) findViewById(R.id.usernameTextView);
-//        TextView emailTextView = (TextView) findViewById(R.id.emailTextView);
-//      TODO MAKE THIS WORK
-//
-//        usernameTextView.setText(getCurrentUser().username);
-//        emailTextView.setText(getCurrentUser().email);
+        TextView usernameTextView = (TextView) header.findViewById(R.id.usernameTextView);
+        TextView emailTextView = (TextView) header.findViewById(R.id.emailTextView);
+
+        usernameTextView.setText(getCurrentUser().username);
+        emailTextView.setText(getCurrentUser().email);
 
         if (findViewById(R.id.fragment_container) != null) {
 
@@ -239,7 +238,6 @@ public class MainActivity extends AppCompatActivity
                         auctionItem.name = itemNameTextView.getText().toString();
                         auctionItem.created_by = getCurrentUser().username;
                         db.addAuctionItem(auctionItem);
-                        Toast.makeText(getApplicationContext(), "Auction submitted successfully.", Toast.LENGTH_SHORT);
 
 
                         startingPriceTextView.setText("");

@@ -7,7 +7,7 @@ public class AuctionItem {
 
 
     public int id;
-    public int highest_bid;
+    public double highest_bid;
     public int starting_price;
     public int days_active;
     public String name, created_by, highest_bidder;
@@ -17,7 +17,7 @@ public class AuctionItem {
 
     }
 
-    public AuctionItem(int id, int highest_bid, int starting_price, String name, String created_by, String highest_bidder, int days_active) {
+    public AuctionItem(int id, double highest_bid, int starting_price, String name, String created_by, String highest_bidder, int days_active) {
         this.id = id;
         this.highest_bid = highest_bid;
         this.starting_price = starting_price;
@@ -37,11 +37,11 @@ public class AuctionItem {
         this.id = id;
     }
 
-    public int getHighest_bid() {
+    public double getHighest_bid() {
         return highest_bid;
     }
 
-    public void setHighest_bid(int highest_bid) {
+    public void setHighest_bid(double highest_bid) {
         this.highest_bid = highest_bid;
     }
 

@@ -2,14 +2,18 @@ package com.crossover.auctionproject.app;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
@@ -54,22 +58,45 @@ public class ActiveAuctionsFragment extends Fragment {
                 auctionItemList);
         activeAuctionsListView.setAdapter(adapter);
 
-
-        for (AuctionItem item : auctionItemList) {
-            Log.e("ADATPER DEBUG", item.created_by + item.highest_bid);
-        }
-
         adapter.notifyDataSetChanged();
-
 
         activeAuctionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //todo add bidding
-//                Intent intent = new Intent(getActivity(), SingleAuctionItemActivity.class);
-//
-//                intent.putExtra("id", auctionItemList.get(position).getId());
-//                startActivity(intent);
+                final AuctionItem auctionItem = auctionItemList.get(position);
+
+                final EditText yourBidEditText = new EditText(getActivity());
+                yourBidEditText.setHint("Your bid: ");
+                yourBidEditText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+                AlertDialog.Builder bidDialogBuilder = new AlertDialog.Builder(getActivity());
+                bidDialogBuilder.setTitle("Item: " + auctionItem.getName());
+                bidDialogBuilder.setMessage("Highest bid: " + auctionItem.getHighest_bid() + " $");
+                bidDialogBuilder.setView(yourBidEditText, 20, 10, 20, 10);
+                bidDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Double.parseDouble(yourBidEditText.getText().toString()) > auctionItem.getHighest_bid()) {
+                            auctionItem.setHighest_bid(Double.parseDouble(yourBidEditText.getText().toString()));
+                            auctionItem.setHighest_bidder(prefs.getString("currentUser", "noUser"));
+                            db.updateAuctionItem(auctionItem);
+                            adapter.notifyDataSetChanged();
+                            dialog.dismiss();
+
+                        } else {
+                            Toast.makeText(getActivity(), "Your bid needs to be higher than the current bid.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                bidDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                bidDialogBuilder.create().show();
+
+
             }
         });
 
