@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity
                     db.addAuctionItem(auctionItem);
 
 
+                    Toast.makeText(getApplicationContext(),"Auction submitted successfully.",Toast.LENGTH_SHORT);
                     startingPriceTextView.setText("");
                     daysActiveTextView.setText("");
                     itemNameTextView.setText("");
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity
                             auctionItem.name = itemNameTextView.getText().toString();
                             auctionItem.created_by = getCurrentUser().username;
                             db.addAuctionItem(auctionItem);
+                            Toast.makeText(getApplicationContext(), "Auction submitted successfully.", Toast.LENGTH_SHORT);
 
                             startingPriceTextView.setText("");
                             daysActiveTextView.setText("");
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity
                         auctionItem.name = itemNameTextView.getText().toString();
                         auctionItem.created_by = getCurrentUser().username;
                         db.addAuctionItem(auctionItem);
+                        Toast.makeText(getApplicationContext(), "Auction submitted successfully.", Toast.LENGTH_SHORT);
 
 
                         startingPriceTextView.setText("");
