@@ -383,7 +383,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (user.username.equalsIgnoreCase(username) && user.email.equalsIgnoreCase(email) && user.password.equalsIgnoreCase(password)) {
                     prefs.putString("currentUser", user.username);
                     return true;
-                } else {
+                } else if (!user.email.equalsIgnoreCase(email) || !user.password.equalsIgnoreCase(password)){
+                    return false;
+                }
+                else {
                     return false;
                 }
 

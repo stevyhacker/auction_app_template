@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 /**
  * Created by stevyhacker on 8.12.15..
  */
@@ -225,4 +227,33 @@ public class DatabaseAdapter {
         return arr;
     }
 
+    public ArrayList<AuctionItem> getAvailableAuctions(String currentUser) {
+        ArrayList<AuctionItem> activeAuctionsList = new ArrayList<AuctionItem>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_CREATED_BY + " != " + currentUser + ";", null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
+                    AuctionItem auction = new AuctionItem();
+
+                    auction.id = cursor.getInt(cursor.getColumnIndex("ID"));
+                    auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
+                    auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
+                    auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
+                    auction.highest_bid = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
+                    auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
+                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+
+                    activeAuctionsList.add(auction);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
+
+        return activeAuctionsList;
+
+    }
 }

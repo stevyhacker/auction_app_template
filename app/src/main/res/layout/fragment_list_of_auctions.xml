@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                tools:context="com.crossover.auctionproject.ActiveAuctionsFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ListView
+            android:id="@+id/activeAuctionsListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#fff"
+            android:choiceMode="singleChoice"
+            android:dividerHeight="1dp"/>
+
+        <!--<TextView-->
+            <!--android:id="@+id/bidding_items_list_empty"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:text="No active auctions at the moment."-->
+            <!--android:textColor="#000"/>-->
+    </FrameLayout>
+
+
+</RelativeLayout>

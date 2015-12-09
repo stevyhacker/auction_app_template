@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity
     PreferencesHelper prefs;
     android.support.v7.app.AlertDialog addAuctionDialog;
     AlertDialog.Builder addAuctionDialogBuilder;
-     EditText itemNameTextView;
-     EditText daysActiveTextView;
-     EditText startingPriceTextView;
+    EditText itemNameTextView;
+    EditText daysActiveTextView;
+    EditText startingPriceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +63,14 @@ public class MainActivity extends AppCompatActivity
         addAuctionDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
                 if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
                     auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                     auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                    auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                    auctionItem.highest_bidder = getCurrentUser().username;
                     auctionItem.name = itemNameTextView.getText().toString();
                     auctionItem.created_by = getCurrentUser().username;
                     db.addAuctionItem(auctionItem);
@@ -109,6 +112,8 @@ public class MainActivity extends AppCompatActivity
                             AuctionItem auctionItem = new AuctionItem();
                             auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                             auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                            auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                            auctionItem.highest_bidder = getCurrentUser().username;
                             auctionItem.name = itemNameTextView.getText().toString();
                             auctionItem.created_by = getCurrentUser().username;
                             db.addAuctionItem(auctionItem);
@@ -138,8 +143,19 @@ public class MainActivity extends AppCompatActivity
 //        usernameTextView.setText(getCurrentUser().username);
 //        emailTextView.setText(getCurrentUser().email);
 
-//     Todo delete   Log.e("USERS DB", "UserItem email " +   getCurrentUser().email);
+        if (findViewById(R.id.fragment_container) != null) {
 
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            ActiveAuctionsFragment activeAuctionsFragment = new ActiveAuctionsFragment();
+            activeAuctionsFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, activeAuctionsFragment).commit();
+            setTitle(getString(R.string.active_auctions));
+
+        }
 
     }
 
@@ -191,14 +207,14 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0) {
-
                         AuctionItem auctionItem = new AuctionItem();
                         auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                         auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
+                        auctionItem.highest_bid = Integer.parseInt(startingPriceTextView.getText().toString());
+                        auctionItem.highest_bidder = getCurrentUser().username;
                         auctionItem.name = itemNameTextView.getText().toString();
                         auctionItem.created_by = getCurrentUser().username;
                         db.addAuctionItem(auctionItem);
-
                         addAuctionDialog.dismiss();
 
                     } else {
