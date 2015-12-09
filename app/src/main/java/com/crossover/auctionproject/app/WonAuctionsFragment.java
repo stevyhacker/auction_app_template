@@ -1,33 +1,32 @@
-package com.crossover.auctionproject;
-
+package com.crossover.auctionproject.app;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 
-
 /**
- * A simple {@link Fragment} subclass.
+ * Created by stevyhacker on 9.12.15..
  */
-public class ActiveAuctionsFragment extends Fragment {
+public class WonAuctionsFragment extends Fragment {
+
     ListView activeAuctionsListView;
-    ActiveAuctionsAdapter adapter;
+    WonAuctionsAdapter adapter;
     ArrayList<AuctionItem> auctionItemList;
     PreferencesHelper prefs;
     DatabaseAdapter db;
 
-    public ActiveAuctionsFragment() {
+    public WonAuctionsFragment() {
     }
 
     @Override
@@ -47,16 +46,12 @@ public class ActiveAuctionsFragment extends Fragment {
         db = new DatabaseAdapter(getActivity());
         activeAuctionsListView = (ListView) view.findViewById(R.id.activeAuctionsListView);
         auctionItemList = new ArrayList<AuctionItem>();
-        auctionItemList = db.getAvailableAuctions(prefs.getString("currentUser", "noUser"));
+        auctionItemList = db.getWonAuctions(prefs.getString("currentUser", "noUser"));
 
-        adapter = new ActiveAuctionsAdapter(getActivity(), R.layout.active_auctions_item,
+        adapter = new WonAuctionsAdapter(getActivity(), R.layout.won_auctions_item,
                 auctionItemList);
         activeAuctionsListView.setAdapter(adapter);
 
-
-        for (AuctionItem item : auctionItemList) {
-            Log.e("ADATPER DEBUG", item.created_by + item.highest_bid);
-        }
 
         adapter.notifyDataSetChanged();
 

@@ -1,4 +1,4 @@
-package com.crossover.auctionproject;
+package com.crossover.auctionproject.app;
 
 import android.app.Application;
 import android.content.Context;

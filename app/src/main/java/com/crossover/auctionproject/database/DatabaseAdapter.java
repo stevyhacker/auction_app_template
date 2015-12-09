@@ -256,4 +256,34 @@ public class DatabaseAdapter {
         return activeAuctionsList;
 
     }
+
+    public ArrayList<AuctionItem> getWonAuctions(String currentUser) {
+        ArrayList<AuctionItem> wonAuctions = new ArrayList<AuctionItem>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_HIGHEST_BIDDER + " = '" + currentUser + "' " + "AND " + AUCTIONS_DAYS_ACTIVE + " = 0 " + "AND " + AUCTIONS_CREATED_BY + " = '" + currentUser + "';", null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
+                    AuctionItem auction = new AuctionItem();
+
+                    auction.id = cursor.getInt(cursor.getColumnIndex("ID"));
+                    auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
+                    auction.starting_price = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
+                    auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
+                    auction.highest_bid = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
+                    auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
+                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+
+                    wonAuctions.add(auction);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
+
+        return wonAuctions;
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.crossover.auctionproject;
+package com.crossover.auctionproject.app;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
-                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
+                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
                     auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
+                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
                             AuctionItem auctionItem = new AuctionItem();
                             auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                             auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
@@ -197,6 +198,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.all_auctions) {
+            ActiveAuctionsFragment activeAuctionsFragment = new ActiveAuctionsFragment();
+            activeAuctionsFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, activeAuctionsFragment).commit();
+            setTitle(getString(R.string.active_auctions));
         } else if (id == R.id.add_auction) {
 
             addAuctionDialog.show();
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString())> 0) {
+                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
                         AuctionItem auctionItem = new AuctionItem();
                         auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
                         auctionItem.starting_price = Integer.parseInt(startingPriceTextView.getText().toString());
@@ -235,7 +241,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.active_bids) {
 
         } else if (id == R.id.won_auctions) {
-
+            WonAuctionsFragment wonAuctionsFragment = new WonAuctionsFragment();
+            wonAuctionsFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, wonAuctionsFragment).commit();
+            setTitle(getString(R.string.active_auctions));
         }
 
         drawer.closeDrawer(GravityCompat.START);
