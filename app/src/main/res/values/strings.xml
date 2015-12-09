@@ -25,4 +25,5 @@
     <string name="starting_price">Starting price:</string>
     <string name="days_active">Days active:</string>
     <string name="active_auctions">Active Auctions</string>
+    <string name="won_auctions">Won Auctions</string>
 </resources>

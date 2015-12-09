@@ -6,29 +6,31 @@
                 android:focusableInTouchMode="true"
                 tools:context=".app.ActiveAuctionsFragment">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <TextView
-            android:id="@+id/bidding_items_list_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="No active auctions at the moment."
-            android:textColor="#000"/>
 
         <ListView
-            android:id="@+id/activeAuctionsListView"
+            android:id="@+id/wonAuctionsListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:background="#fff"
             android:choiceMode="singleChoice"
             android:dividerHeight="1dp"/>
+        <TextView
+            android:id="@+id/bidding_items_list_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_below="@+id/wonAuctionsListView"
+            android:text="You have not won any auctions yet."
+            android:textColor="#000"/>
 
-    </FrameLayout>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

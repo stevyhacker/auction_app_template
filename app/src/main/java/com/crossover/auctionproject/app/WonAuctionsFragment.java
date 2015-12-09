@@ -39,12 +39,12 @@ public class WonAuctionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_list_of_auctions,
+        View view = inflater.inflate(R.layout.fragment_list_of_wonauctions,
                 container, false);
 
         prefs = new PreferencesHelper(getActivity());
         db = new DatabaseAdapter(getActivity());
-        activeAuctionsListView = (ListView) view.findViewById(R.id.activeAuctionsListView);
+        activeAuctionsListView = (ListView) view.findViewById(R.id.wonAuctionsListView);
         auctionItemList = new ArrayList<AuctionItem>();
         auctionItemList = db.getWonAuctions(prefs.getString("currentUser", "noUser"));
 

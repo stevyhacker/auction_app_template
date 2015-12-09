@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -65,7 +67,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
-                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
+                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0
+                        && Integer.parseInt(startingPriceTextView.getText().toString()) > 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
                     auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
@@ -76,6 +79,10 @@ public class MainActivity extends AppCompatActivity
                     auctionItem.created_by = getCurrentUser().username;
                     db.addAuctionItem(auctionItem);
 
+
+                    startingPriceTextView.setText("");
+                    daysActiveTextView.setText("");
+                    itemNameTextView.setText("");
                     dialog.dismiss();
 
                 } else {
@@ -118,6 +125,10 @@ public class MainActivity extends AppCompatActivity
                             auctionItem.name = itemNameTextView.getText().toString();
                             auctionItem.created_by = getCurrentUser().username;
                             db.addAuctionItem(auctionItem);
+
+                            startingPriceTextView.setText("");
+                            daysActiveTextView.setText("");
+                            itemNameTextView.setText("");
                             addAuctionDialog.dismiss();
                         } else {
                             Toast.makeText(getApplicationContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
@@ -198,11 +209,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.all_auctions) {
-            ActiveAuctionsFragment activeAuctionsFragment = new ActiveAuctionsFragment();
-            activeAuctionsFragment.setArguments(getIntent().getExtras());
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, activeAuctionsFragment).commit();
+            Fragment activeAuctionsFragment = new ActiveAuctionsFragment();
             setTitle(getString(R.string.active_auctions));
+
+
+            // Replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, activeAuctionsFragment)
+                    .commit();
+
         } else if (id == R.id.add_auction) {
 
             addAuctionDialog.show();
@@ -221,6 +237,11 @@ public class MainActivity extends AppCompatActivity
                         auctionItem.name = itemNameTextView.getText().toString();
                         auctionItem.created_by = getCurrentUser().username;
                         db.addAuctionItem(auctionItem);
+
+
+                        startingPriceTextView.setText("");
+                        daysActiveTextView.setText("");
+                        itemNameTextView.setText("");
                         addAuctionDialog.dismiss();
 
                     } else {
@@ -241,11 +262,14 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.active_bids) {
 
         } else if (id == R.id.won_auctions) {
-            WonAuctionsFragment wonAuctionsFragment = new WonAuctionsFragment();
-            wonAuctionsFragment.setArguments(getIntent().getExtras());
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, wonAuctionsFragment).commit();
-            setTitle(getString(R.string.active_auctions));
+            Fragment wonAuctionsFragment = new WonAuctionsFragment();
+            setTitle(getString(R.string.won_auctions));
+
+            // Replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, wonAuctionsFragment)
+                    .commit();
         }
 
         drawer.closeDrawer(GravityCompat.START);
