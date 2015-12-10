@@ -262,6 +262,15 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.active_bids) {
 
+            Fragment activeBidsFragment = new ActiveBidsFragment();
+            setTitle(getString(R.string.active_bids));
+
+            // Replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, activeBidsFragment)
+                    .commit();
+
         } else if (id == R.id.won_auctions) {
             Fragment wonAuctionsFragment = new WonAuctionsFragment();
             setTitle(getString(R.string.won_auctions));

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by stevyhacker on 8.12.15..
@@ -27,14 +28,13 @@ public class DatabaseAdapter {
     private static String AUCTIONS_HIGHEST_BIDDER = "HIGHEST_BIDDER";
     private static String AUCTIONS_HIGHEST_BID = "HIGHEST_BID";
     private static String AUCTIONS_CREATED_BY = "CREATED_BY";
-    private static String AUCTIONS_ALL_BIDDERS = "ALL_BIDDERS";
+    private static String USERS_ALL_BIDS = "ALL_BIDS";
 
     // SQL Statement to create new tables.
-    static final String USER_TABLE_CREATE = "CREATE TABLE " + USERS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_USERNAME + " TEXT, EMAIL TEXT, PASSWORD TEXT);";
+    static final String USER_TABLE_CREATE = "CREATE TABLE " + USERS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_USERNAME + " TEXT, EMAIL TEXT, PASSWORD TEXT," + USERS_ALL_BIDS + " TEXT);";
     static final String AUCTION_TABLE_CREATE = "CREATE TABLE " + AUCTIONS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + AUCTIONS_NAME + " TEXT, " + AUCTIONS_STARTING_PRICE + " REAL, " + AUCTIONS_DAYS_ACTIVE + " INTEGER, " + AUCTIONS_CREATED_BY + " TEXT, " + AUCTIONS_HIGHEST_BIDDER + " TEXT, "
             + AUCTIONS_HIGHEST_BID + " REAL" + ");";
-//            + AUCTIONS_ALL_BIDDERS + " TEXT "
 
 
     // Variable to hold the database instance
@@ -68,6 +68,7 @@ public class DatabaseAdapter {
         newValues.put(USERS_USERNAME, user.username);
         newValues.put(USERS_PASSWORD, user.password);
         newValues.put(USERS_EMAIL, user.email);
+        newValues.put(USERS_ALL_BIDS, convertArrayToString(convertIntegerArrayToStringArray(user.all_bids)));
 
         // Insert the row into your table
         db.insert(USERS_TABLE, null, newValues);
@@ -85,7 +86,6 @@ public class DatabaseAdapter {
         newValues.put(AUCTIONS_CREATED_BY, auction.created_by);
         newValues.put(AUCTIONS_HIGHEST_BID, auction.highest_bid);
         newValues.put(AUCTIONS_HIGHEST_BIDDER, auction.highest_bidder);
-//        newValues.put(AUCTIONS_ALL_BIDDERS, convertArrayToString(auction.all_bidders));
         newValues.put(AUCTIONS_DAYS_ACTIVE, auction.days_active);
 
 
@@ -151,6 +151,7 @@ public class DatabaseAdapter {
         user.id = cursor.getInt(cursor.getColumnIndex("ID"));
         user.email = cursor.getString(cursor.getColumnIndex(USERS_EMAIL));
         user.password = cursor.getString(cursor.getColumnIndex(USERS_PASSWORD));
+        user.all_bids = convertStringArrayToIntegerArray(convertStringToArray(cursor.getString(cursor.getColumnIndex(USERS_ALL_BIDS))));
 
         cursor.close();
         db.close();
@@ -192,39 +193,21 @@ public class DatabaseAdapter {
         db.close();
     }
 
-    public void updateUserItem(String userName, String email, String password) {
+    public void updateUserItem(UserItem user) {
         db = dbHelper.getWritableDatabase();
 
         // Define the updated row content.
         ContentValues updatedValues = new ContentValues();
         // Assign values for each row.
-        updatedValues.put(USERS_USERNAME, userName);
-        updatedValues.put(USERS_PASSWORD, password);
-        updatedValues.put(USERS_EMAIL, email);
+        updatedValues.put(USERS_USERNAME, user.username);
+        updatedValues.put(USERS_PASSWORD, user.password);
+        updatedValues.put(USERS_EMAIL, user.email);
+        updatedValues.put(USERS_ALL_BIDS, convertArrayToString(convertIntegerArrayToStringArray(user.all_bids)));
 
         String where = USERS_USERNAME + " = ?";
-        db.update(USERS_TABLE, updatedValues, where, new String[]{userName});
+        db.update(USERS_TABLE, updatedValues, where, new String[]{user.username});
 
         db.close();
-    }
-
-    public static String strSeparator = ":_;_:";
-
-    public static String convertArrayToString(String[] array) {
-        String str = "";
-        for (int i = 0; i < array.length; i++) {
-            str = str + array[i];
-            // Do not append comma at the end of last element
-            if (i < array.length - 1) {
-                str = str + strSeparator;
-            }
-        }
-        return str;
-    }
-
-    public static String[] convertStringToArray(String str) {
-        String[] arr = str.split(strSeparator);
-        return arr;
     }
 
     public ArrayList<AuctionItem> getAvailableAuctions(String currentUser) {
@@ -286,4 +269,47 @@ public class DatabaseAdapter {
         return wonAuctions;
 
     }
+
+
+    //Array converters for all user bids
+    public static String strSeparator = ":_;_:";
+
+    public static String convertArrayToString(ArrayList<String> array) {
+        String str = "";
+        for (int i = 0; i < array.size(); i++) {
+            str = str + array.get(i);
+            // Do not append comma at the end of last element
+            if (i < array.size() - 1) {
+                str = str + strSeparator;
+            }
+        }
+        return str;
+    }
+
+    public static ArrayList<String> convertStringToArray(String str) {
+        ArrayList<String> arr = new ArrayList<>(Arrays.asList(str.split(strSeparator)));
+        return arr;
+    }
+
+    public static ArrayList<Integer> convertStringArrayToIntegerArray(ArrayList<String> str) {
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+
+        if (str.size() > 1) {
+            for (int i = 0; i < str.size(); i++) {
+                arr.add(i, Integer.parseInt(str.get(i)));
+            }
+        }
+        return arr;
+    }
+
+    public static ArrayList<String> convertIntegerArrayToStringArray(ArrayList<Integer> ints) {
+        ArrayList<String> arr = new ArrayList<String>();
+
+        for (int i = 0; i < ints.size(); i++) {
+            arr.add(i, String.valueOf(ints.get(i)));
+        }
+
+        return arr;
+    }
+
 }

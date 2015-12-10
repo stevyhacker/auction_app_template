@@ -181,6 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         newUser.username = username;
         newUser.password = password;
         newUser.email = email;
+        newUser.all_bids = new ArrayList<Integer>();
 
         db.addUserItem(newUser);
 
@@ -397,6 +398,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 newUser.username = username;
                 newUser.password = password;
                 newUser.email = email;
+                newUser.all_bids = new ArrayList<Integer>();
 
                 db.addUserItem(newUser);
 

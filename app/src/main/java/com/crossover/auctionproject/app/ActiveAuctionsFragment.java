@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
+import com.crossover.auctionproject.database.UserItem;
 
 import java.util.ArrayList;
 
@@ -83,8 +84,15 @@ public class ActiveAuctionsFragment extends Fragment {
                         if (Double.parseDouble(yourBidEditText.getText().toString()) > auctionItem.getHighest_bid()) {
                             auctionItem.setHighest_bid(Double.parseDouble(yourBidEditText.getText().toString()));
                             auctionItem.setHighest_bidder(prefs.getString("currentUser", "noUser"));
+                            UserItem user = db.getUserItem(prefs.getString("currentUser", "noUser"));
+                            ArrayList<Integer> allbids = user.getAll_bids();
+                            allbids.add(auctionItem.getId());
+                            user.setAll_bids(allbids);
+                            db.updateUserItem(user);
+
                             db.updateAuctionItem(auctionItem);
                             adapter.notifyDataSetChanged();
+                            //TODO ADD EVERY BIDDED AUCTION TO MY AUCTIONS USER ARRAY
                             dialog.dismiss();
 
                         } else {

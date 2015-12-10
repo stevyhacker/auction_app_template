@@ -11,7 +11,6 @@ public class AuctionItem {
     public double starting_price;
     public int days_active;
     public String name, created_by, highest_bidder;
-//    public String[] all_bidders;
 
     public AuctionItem() {
 
@@ -25,7 +24,6 @@ public class AuctionItem {
         this.created_by = created_by;
         this.highest_bidder = highest_bidder;
         this.days_active = days_active;
-//        this.all_bidders = all_bidders;
     }
 
 
@@ -85,14 +83,6 @@ public class AuctionItem {
         this.days_active = days_active;
     }
 
-
-//    public String[] getAll_bidders() {
-//        return all_bidders;
-//    }
-//
-//    public void setAll_bidders(String[] all_bidders) {
-//        this.all_bidders = all_bidders;
-//    }
 
 
 }

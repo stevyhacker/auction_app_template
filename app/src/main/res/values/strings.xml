@@ -26,4 +26,5 @@
     <string name="days_active">Days active:</string>
     <string name="active_auctions">Active Auctions</string>
     <string name="won_auctions">Won Auctions</string>
+    <string name="active_bids">Active Bids</string>
 </resources>
