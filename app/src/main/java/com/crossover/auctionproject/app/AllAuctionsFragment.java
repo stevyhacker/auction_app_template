@@ -131,6 +131,8 @@ public class AllAuctionsFragment extends Fragment {
         @Override
         public void run() {
             randomBid();
+            auctionItemList.clear();
+            auctionItemList.addAll(db.getAvailableAuctions(prefs.getString("currentUser", "noUser")));
             adapter.notifyDataSetChanged();
             mHandler.postDelayed(mStatusChecker, mInterval);
         }
