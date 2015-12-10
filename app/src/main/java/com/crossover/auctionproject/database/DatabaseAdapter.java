@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +24,7 @@ public class DatabaseAdapter {
 
     private static String AUCTIONS_TABLE = "AUCTIONS";
     private static String AUCTIONS_NAME = "NAME";
-    private static String AUCTIONS_DAYS_ACTIVE = "DAYS_ACTIVE";
+    private static String AUCTIONS_HOURS_ACTIVE = "HOURS_ACTIVE";
     private static String AUCTIONS_STARTING_PRICE = "STARTING_PRICE";
     private static String AUCTIONS_HIGHEST_BIDDER = "HIGHEST_BIDDER";
     private static String AUCTIONS_HIGHEST_BID = "HIGHEST_BID";
@@ -35,7 +34,7 @@ public class DatabaseAdapter {
     // SQL Statement to create new tables.
     static final String USER_TABLE_CREATE = "CREATE TABLE " + USERS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERS_USERNAME + " TEXT, EMAIL TEXT, PASSWORD TEXT," + USERS_ALL_BIDS + " TEXT);";
     static final String AUCTION_TABLE_CREATE = "CREATE TABLE " + AUCTIONS_TABLE + "( " + "ID" + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + AUCTIONS_NAME + " TEXT, " + AUCTIONS_STARTING_PRICE + " REAL, " + AUCTIONS_DAYS_ACTIVE + " INTEGER, " + AUCTIONS_CREATED_BY + " TEXT, " + AUCTIONS_HIGHEST_BIDDER + " TEXT, "
+            + AUCTIONS_NAME + " TEXT, " + AUCTIONS_STARTING_PRICE + " REAL, " + AUCTIONS_HOURS_ACTIVE + " INTEGER, " + AUCTIONS_CREATED_BY + " TEXT, " + AUCTIONS_HIGHEST_BIDDER + " TEXT, "
             + AUCTIONS_HIGHEST_BID + " REAL" + ");";
 
 
@@ -88,7 +87,7 @@ public class DatabaseAdapter {
         newValues.put(AUCTIONS_CREATED_BY, auction.created_by);
         newValues.put(AUCTIONS_HIGHEST_BID, auction.highest_bid);
         newValues.put(AUCTIONS_HIGHEST_BIDDER, auction.highest_bidder);
-        newValues.put(AUCTIONS_DAYS_ACTIVE, auction.days_active);
+        newValues.put(AUCTIONS_HOURS_ACTIVE, auction.hours_active);
 
 
         // Insert the row into your table
@@ -131,7 +130,7 @@ public class DatabaseAdapter {
         auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
         auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
         auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
-        auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+        auction.hours_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HOURS_ACTIVE)));
 
 
         db.close();
@@ -154,7 +153,6 @@ public class DatabaseAdapter {
         user.email = cursor.getString(cursor.getColumnIndex(USERS_EMAIL));
         user.password = cursor.getString(cursor.getColumnIndex(USERS_PASSWORD));
         user.all_bids = convertStringArrayToIntegerArray(convertStringToArray(cursor.getString(cursor.getColumnIndex(USERS_ALL_BIDS))));
-        Log.e("get.user.all_bids", cursor.getString(cursor.getColumnIndex(USERS_ALL_BIDS)));
         cursor.close();
         db.close();
         return user;
@@ -185,7 +183,7 @@ public class DatabaseAdapter {
         newValues.put(AUCTIONS_CREATED_BY, auction.created_by);
         newValues.put(AUCTIONS_HIGHEST_BID, auction.highest_bid);
         newValues.put(AUCTIONS_HIGHEST_BIDDER, auction.highest_bidder);
-        newValues.put(AUCTIONS_DAYS_ACTIVE, auction.days_active);
+        newValues.put(AUCTIONS_HOURS_ACTIVE, auction.hours_active);
 
 
         String where = "ID" + " = " + auction.id;
@@ -215,7 +213,7 @@ public class DatabaseAdapter {
         ArrayList<AuctionItem> activeAuctionsList = new ArrayList<AuctionItem>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_CREATED_BY + " != '" + currentUser + "';", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_CREATED_BY + " != '" + currentUser + "'" + " AND " + AUCTIONS_HOURS_ACTIVE + " != 0;", null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -228,7 +226,7 @@ public class DatabaseAdapter {
                     auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
                     auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
                     auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
-                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+                    auction.hours_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HOURS_ACTIVE)));
 
                     activeAuctionsList.add(auction);
                     cursor.moveToNext();
@@ -258,7 +256,7 @@ public class DatabaseAdapter {
                     auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
                     auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
                     auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
-                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+                    auction.hours_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HOURS_ACTIVE)));
 
                     allAuctions.add(auction);
                     cursor.moveToNext();
@@ -275,7 +273,7 @@ public class DatabaseAdapter {
         ArrayList<AuctionItem> wonAuctions = new ArrayList<AuctionItem>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_HIGHEST_BIDDER + " = '" + currentUser + "' " + "AND " + AUCTIONS_DAYS_ACTIVE + " = 0 " + "AND " + AUCTIONS_CREATED_BY + " = '" + currentUser + "';", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + " WHERE " + AUCTIONS_HIGHEST_BIDDER + " = '" + currentUser + "' " + "AND " + AUCTIONS_HOURS_ACTIVE + " = 0 " + "AND " + AUCTIONS_CREATED_BY + " = '" + currentUser + "';", null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -288,7 +286,7 @@ public class DatabaseAdapter {
                     auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
                     auction.highest_bid = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
                     auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
-                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+                    auction.hours_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_HOURS_ACTIVE)));
 
                     wonAuctions.add(auction);
                     cursor.moveToNext();
@@ -327,21 +325,15 @@ public class DatabaseAdapter {
 
     public static ArrayList<Integer> convertStringArrayToIntegerArray(ArrayList<String> str) {
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        try {
-
-            if (str.size() >= 1) {
+        try {if (str.size() >= 1) {
                 for (int i = 0; i < str.size(); i++) {
                     arr.add(Integer.parseInt(str.get(i)));
-
                 }
             }
-
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
         return arr;
-
     }
 
     public static ArrayList<String> convertIntegerArrayToStringArray(ArrayList<Integer> ints) {

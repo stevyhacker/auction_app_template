@@ -62,10 +62,10 @@ public class ActiveBidsAdapter extends ArrayAdapter<AuctionItem> {
         } else {
             viewHolder.highestBidderTextView.setText("Highest bidder: " + auctionItem.getHighest_bidder());
         }
-        if (auctionItem.getDays_active() > 1) {
-            viewHolder.timeLeftTextView.setText(String.valueOf(auctionItem.getDays_active()) + " days left");
+        if (auctionItem.getHours_active() > 1) {
+            viewHolder.timeLeftTextView.setText(String.valueOf(auctionItem.getHours_active()) + " hours left");
         } else {
-            viewHolder.timeLeftTextView.setText(24 + " hours left");
+            viewHolder.timeLeftTextView.setText(1 + " hour left");
         }
         viewHolder.priceTextView.setText(String.valueOf(auctionItem.getHighest_bid()) + " $");
 

@@ -31,7 +31,6 @@ import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity
     android.support.v7.app.AlertDialog addAuctionDialog;
     AlertDialog.Builder addAuctionDialogBuilder;
     EditText itemNameTextView;
-    EditText daysActiveTextView;
+    EditText hoursActiveTextView;
     EditText startingPriceTextView;
 
     @Override
@@ -62,21 +61,21 @@ public class MainActivity extends AppCompatActivity
         View addAuctionView = inflater.inflate(R.layout.add_auction_dialog_layout, null);
         startingPriceTextView = (EditText) addAuctionView.findViewById(R.id.startingPriceTextView);
         itemNameTextView = (EditText) addAuctionView.findViewById(R.id.itemNameTextView);
-        daysActiveTextView = (EditText) addAuctionView.findViewById(R.id.timeTextView);
+        hoursActiveTextView = (EditText) addAuctionView.findViewById(R.id.timeTextView);
 
         addAuctionDialogBuilder = new AlertDialog.Builder(this);
-        addAuctionDialogBuilder.setTitle("Add item for auction"); //todo SAVE TO STRINGS.XML
+        addAuctionDialogBuilder.setTitle("Add item for auction");
         addAuctionDialogBuilder.setMessage("Enter your auction details:");
         addAuctionDialogBuilder.setCancelable(false);
         addAuctionDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //THIS IS OVERRIDEN AFTER .show() BECAUSE OF DATA VALIDATION DIALOG CANCELING
-                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0
+                if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(hoursActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(hoursActiveTextView.getText().toString()) > 0
                         && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
 
                     AuctionItem auctionItem = new AuctionItem();
-                    auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                    auctionItem.hours_active = Integer.parseInt(hoursActiveTextView.getText().toString());
                     auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
                     auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                     auctionItem.highest_bidder = getCurrentUser().username;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity
 
 
                     startingPriceTextView.setText("");
-                    daysActiveTextView.setText("");
+                    hoursActiveTextView.setText("");
                     itemNameTextView.setText("");
                     dialog.dismiss();
 
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startingPriceTextView.setText("");
-                daysActiveTextView.setText("");
+                hoursActiveTextView.setText("");
                 itemNameTextView.setText("");
                 dialog.cancel();
             }
@@ -121,9 +120,9 @@ public class MainActivity extends AppCompatActivity
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
+                        if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(hoursActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(hoursActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
                             AuctionItem auctionItem = new AuctionItem();
-                            auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                            auctionItem.hours_active = Integer.parseInt(hoursActiveTextView.getText().toString());
                             auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
                             auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                             auctionItem.highest_bidder = getCurrentUser().username;
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity
                             db.addAuctionItem(auctionItem);
 
                             startingPriceTextView.setText("");
-                            daysActiveTextView.setText("");
+                            hoursActiveTextView.setText("");
                             itemNameTextView.setText("");
                             addAuctionDialog.dismiss();
                         } else {
@@ -174,10 +173,37 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-
+        timeHandler = new Handler();
+        startRepeatingTask();
 
     }
 
+
+    //Handler for time
+    private int hourInterval = 60*60*1000;
+    private Handler timeHandler;
+
+    Runnable hourChecker = new Runnable() {
+        @Override
+        public void run() {
+
+           ArrayList<AuctionItem> auctions =  db.getAllAuctions();
+            for(AuctionItem auction : auctions){
+                auction.setHours_active(auction.getHours_active()-1);
+                db.updateAuctionItem(auction);
+            }
+
+            timeHandler.postDelayed(hourChecker, hourInterval);
+        }
+    };
+
+    void startRepeatingTask() {
+        hourChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        timeHandler.removeCallbacks(hourChecker);
+    }
 
     @Override
     public void onBackPressed() {
@@ -236,9 +262,9 @@ public class MainActivity extends AppCompatActivity
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(daysActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(daysActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
+                    if (!TextUtils.isEmpty(itemNameTextView.getText()) && !TextUtils.isEmpty(hoursActiveTextView.getText()) && !TextUtils.isEmpty(startingPriceTextView.getText()) && Integer.parseInt(hoursActiveTextView.getText().toString()) > 0 && Double.parseDouble(startingPriceTextView.getText().toString()) > 0) {
                         AuctionItem auctionItem = new AuctionItem();
-                        auctionItem.days_active = Integer.parseInt(daysActiveTextView.getText().toString());
+                        auctionItem.hours_active = Integer.parseInt(hoursActiveTextView.getText().toString());
                         auctionItem.starting_price = Double.parseDouble(startingPriceTextView.getText().toString());
                         auctionItem.highest_bid = Double.parseDouble(startingPriceTextView.getText().toString());
                         auctionItem.highest_bidder = getCurrentUser().username;
@@ -248,7 +274,7 @@ public class MainActivity extends AppCompatActivity
 
 
                         startingPriceTextView.setText("");
-                        daysActiveTextView.setText("");
+                        hoursActiveTextView.setText("");
                         itemNameTextView.setText("");
                         addAuctionDialog.dismiss();
 

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -45,25 +44,18 @@ public class WonAuctionsFragment extends Fragment {
 
         prefs = new PreferencesHelper(getActivity());
         db = new DatabaseAdapter(getActivity());
+
         wonAuctionsListView = (ListView) view.findViewById(R.id.wonAuctionsListView);
-        auctionItemList = new ArrayList<AuctionItem>();
         auctionItemList = db.getWonAuctions(prefs.getString("currentUser", "noUser"));
+
         TextView emptyAuctionTextView = (TextView) view.findViewById(R.id.bidding_items_list_empty);
-        wonAuctionsListView.setAdapter(adapter);
-        adapter = new WonAuctionsAdapter(getActivity(), R.layout.won_auctions_item,
-                auctionItemList);
+        wonAuctionsListView.setEmptyView(emptyAuctionTextView);
+
+        adapter = new WonAuctionsAdapter(getActivity(), R.layout.won_auctions_item,auctionItemList);
         wonAuctionsListView.setAdapter(adapter);
 
 
         adapter.notifyDataSetChanged();
-
-
-        wonAuctionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
 
 
         return view;

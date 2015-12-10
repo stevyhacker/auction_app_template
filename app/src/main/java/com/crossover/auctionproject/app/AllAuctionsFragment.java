@@ -124,7 +124,7 @@ public class AllAuctionsFragment extends Fragment {
     }
 
     //Handler for internal user bot
-    private int mInterval = 10000;
+    private int mInterval = 30000; //30 seconds
     private Handler mHandler;
 
     Runnable mStatusChecker = new Runnable() {
@@ -138,6 +138,15 @@ public class AllAuctionsFragment extends Fragment {
         }
     };
 
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+
     private void randomBid() {
         ArrayList<AuctionItem> allAuctions = db.getAllAuctions();
         Random random = new Random();
@@ -150,16 +159,6 @@ public class AllAuctionsFragment extends Fragment {
 
         db.updateAuctionItem(auctionItem);
     }
-
-    void startRepeatingTask() {
-        mStatusChecker.run();
-    }
-
-    void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
-    }
-
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

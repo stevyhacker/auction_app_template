@@ -9,21 +9,21 @@ public class AuctionItem {
     public int id;
     public double highest_bid;
     public double starting_price;
-    public int days_active;
+    public int hours_active;
     public String name, created_by, highest_bidder;
 
     public AuctionItem() {
 
     }
 
-    public AuctionItem(int id, double highest_bid, double starting_price, String name, String created_by, String highest_bidder, int days_active) {
+    public AuctionItem(int id, double highest_bid, double starting_price, String name, String created_by, String highest_bidder, int hours_active) {
         this.id = id;
         this.highest_bid = highest_bid;
         this.starting_price = starting_price;
         this.name = name;
         this.created_by = created_by;
         this.highest_bidder = highest_bidder;
-        this.days_active = days_active;
+        this.hours_active = hours_active;
     }
 
 
@@ -75,12 +75,12 @@ public class AuctionItem {
         this.highest_bidder = highest_bidder;
     }
 
-    public int getDays_active() {
-        return days_active;
+    public int getHours_active() {
+        return hours_active;
     }
 
-    public void setDays_active(int days_active) {
-        this.days_active = days_active;
+    public void setHours_active(int hours_active) {
+        this.hours_active = hours_active;
     }
 
 
