@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,9 @@ import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -167,10 +171,13 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, allAuctionsFragment).commit();
             setTitle(getString(R.string.active_auctions));
-
         }
 
+
+
+
     }
+
 
     @Override
     public void onBackPressed() {

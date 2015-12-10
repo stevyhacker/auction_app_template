@@ -4,11 +4,11 @@ package com.crossover.auctionproject.app;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -93,18 +94,7 @@ public class AllAuctionsFragment extends Fragment {
                             UserItem user = db.getUserItem(prefs.getString("currentUser", "noUser"));
                             ArrayList<Integer> allbids = user.getAll_bids();
                             allbids.add(auctionItem.getId());
-
-                            for (Integer ints : allbids) {
-                                Log.e("ITEM DBG this all_bids", String.valueOf(ints));
-                                Toast.makeText(getContext(), "AUCTION ITEM NAME " + String.valueOf(ints), Toast.LENGTH_SHORT).show();
-                            }
-
                             user.setAll_bids(allbids);
-                            for (Integer ints : user.all_bids) {
-                                Log.e("ITEM DBG user.all_bids", String.valueOf(ints));
-                                Toast.makeText(getContext(), "AUCTION ITEM NAME " + String.valueOf(ints), Toast.LENGTH_SHORT).show();
-                            }
-
                             db.updateUserItem(user);
 
                             db.updateAuctionItem(auctionItem);
@@ -127,9 +117,44 @@ public class AllAuctionsFragment extends Fragment {
 
             }
         });
-
+        mHandler = new Handler();
+        startRepeatingTask();
 
         return view;
+    }
+
+    //Handler for internal user bot
+    private int mInterval = 10000;
+    private Handler mHandler;
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            randomBid();
+            adapter.notifyDataSetChanged();
+            mHandler.postDelayed(mStatusChecker, mInterval);
+        }
+    };
+
+    private void randomBid() {
+        ArrayList<AuctionItem> allAuctions = db.getAllAuctions();
+        Random random = new Random();
+        int randomInt = random.nextInt(allAuctions.size());
+
+        AuctionItem auctionItem = allAuctions.get(randomInt);
+
+        auctionItem.setHighest_bid(auctionItem.getHighest_bid() + random.nextInt(10 - 5) + 5);
+        auctionItem.setHighest_bidder("internalBot");
+
+        db.updateAuctionItem(auctionItem);
+    }
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
 

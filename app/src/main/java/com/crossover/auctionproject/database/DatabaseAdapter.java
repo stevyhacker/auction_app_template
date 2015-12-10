@@ -189,7 +189,7 @@ public class DatabaseAdapter {
 
 
         String where = "ID" + " = " + auction.id;
-        db.update(AUCTIONS_TABLE, newValues, where , null);
+        db.update(AUCTIONS_TABLE, newValues, where, null);
 
         db.close();
     }
@@ -205,7 +205,7 @@ public class DatabaseAdapter {
         updatedValues.put(USERS_EMAIL, user.email);
         updatedValues.put(USERS_ALL_BIDS, convertArrayToString(convertIntegerArrayToStringArray(user.all_bids)));
 
-        String where = USERS_USERNAME + " = '" + user.username +"'u";
+        String where = USERS_USERNAME + " = '" + user.username + "'";
         db.update(USERS_TABLE, updatedValues, where, null);
 
         db.close();
@@ -238,6 +238,36 @@ public class DatabaseAdapter {
         }
 
         return activeAuctionsList;
+
+    }
+
+    public ArrayList<AuctionItem> getAllAuctions() {
+        ArrayList<AuctionItem> allAuctions = new ArrayList<AuctionItem>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + AUCTIONS_TABLE + ";", null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
+                    AuctionItem auction = new AuctionItem();
+
+                    auction.id = cursor.getInt(cursor.getColumnIndex("ID"));
+                    auction.name = cursor.getString(cursor.getColumnIndex(AUCTIONS_NAME));
+                    auction.starting_price = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_STARTING_PRICE)));
+                    auction.created_by = cursor.getString(cursor.getColumnIndex(AUCTIONS_CREATED_BY));
+                    auction.highest_bid = Double.parseDouble(cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BID)));
+                    auction.highest_bidder = cursor.getString(cursor.getColumnIndex(AUCTIONS_HIGHEST_BIDDER));
+                    auction.days_active = Integer.parseInt(cursor.getString(cursor.getColumnIndex(AUCTIONS_DAYS_ACTIVE)));
+
+                    allAuctions.add(auction);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
+
+        return allAuctions;
 
     }
 
