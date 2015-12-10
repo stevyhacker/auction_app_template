@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +154,7 @@ public class DatabaseAdapter {
         user.email = cursor.getString(cursor.getColumnIndex(USERS_EMAIL));
         user.password = cursor.getString(cursor.getColumnIndex(USERS_PASSWORD));
         user.all_bids = convertStringArrayToIntegerArray(convertStringToArray(cursor.getString(cursor.getColumnIndex(USERS_ALL_BIDS))));
-
+        Log.e("get.user.all_bids", cursor.getString(cursor.getColumnIndex(USERS_ALL_BIDS)));
         cursor.close();
         db.close();
         return user;
@@ -183,12 +185,11 @@ public class DatabaseAdapter {
         newValues.put(AUCTIONS_CREATED_BY, auction.created_by);
         newValues.put(AUCTIONS_HIGHEST_BID, auction.highest_bid);
         newValues.put(AUCTIONS_HIGHEST_BIDDER, auction.highest_bidder);
-//        newValues.put(AUCTIONS_ALL_BIDDERS, convertArrayToString(auction.all_bidders));
         newValues.put(AUCTIONS_DAYS_ACTIVE, auction.days_active);
 
 
-        String where = "ID" + " =?";
-        db.update(AUCTIONS_TABLE, newValues, where, new String[]{String.valueOf(auction.id)});
+        String where = "ID" + " = " + auction.id;
+        db.update(AUCTIONS_TABLE, newValues, where , null);
 
         db.close();
     }
@@ -204,8 +205,8 @@ public class DatabaseAdapter {
         updatedValues.put(USERS_EMAIL, user.email);
         updatedValues.put(USERS_ALL_BIDS, convertArrayToString(convertIntegerArrayToStringArray(user.all_bids)));
 
-        String where = USERS_USERNAME + " = ?";
-        db.update(USERS_TABLE, updatedValues, where, new String[]{user.username});
+        String where = USERS_USERNAME + " = '" + user.username +"'u";
+        db.update(USERS_TABLE, updatedValues, where, null);
 
         db.close();
     }
@@ -270,46 +271,58 @@ public class DatabaseAdapter {
 
     }
 
+    public ArrayList<AuctionItem> getActiveBids(String currentUser) {
+
+        ArrayList<AuctionItem> activeBids = new ArrayList<AuctionItem>();
+
+        UserItem user = getUserItem(currentUser);
+
+        for (Integer id : user.all_bids) {
+            activeBids.add(getAuctionItem(id));
+        }
+
+        return activeBids;
+    }
 
     //Array converters for all user bids
     public static String strSeparator = ":_;_:";
 
     public static String convertArrayToString(ArrayList<String> array) {
-        String str = "";
-        for (int i = 0; i < array.size(); i++) {
-            str = str + array.get(i);
-            // Do not append comma at the end of last element
-            if (i < array.size() - 1) {
-                str = str + strSeparator;
-            }
-        }
-        return str;
+        return TextUtils.join(strSeparator, array);
     }
 
     public static ArrayList<String> convertStringToArray(String str) {
-        ArrayList<String> arr = new ArrayList<>(Arrays.asList(str.split(strSeparator)));
-        return arr;
+        return new ArrayList<>(Arrays.asList(str.split(strSeparator)));
     }
 
     public static ArrayList<Integer> convertStringArrayToIntegerArray(ArrayList<String> str) {
         ArrayList<Integer> arr = new ArrayList<Integer>();
+        try {
 
-        if (str.size() > 1) {
-            for (int i = 0; i < str.size(); i++) {
-                arr.add(i, Integer.parseInt(str.get(i)));
+            if (str.size() >= 1) {
+                for (int i = 0; i < str.size(); i++) {
+                    arr.add(Integer.parseInt(str.get(i)));
+
+                }
             }
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+
         return arr;
+
     }
 
     public static ArrayList<String> convertIntegerArrayToStringArray(ArrayList<Integer> ints) {
         ArrayList<String> arr = new ArrayList<String>();
 
         for (int i = 0; i < ints.size(); i++) {
-            arr.add(i, String.valueOf(ints.get(i)));
+            arr.add(String.valueOf(ints.get(i)));
         }
 
         return arr;
     }
+
 
 }

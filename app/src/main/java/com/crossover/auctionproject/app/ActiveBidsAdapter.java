@@ -1,5 +1,6 @@
 package com.crossover.auctionproject.app;
 
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +14,15 @@ import com.crossover.auctionproject.database.AuctionItem;
 import java.util.ArrayList;
 
 /**
- * Created by stevyhacker on 9.12.15..
+ * Created by stevyhacker on 10.12.15..
  */
-public class ActiveAuctionsAdapter extends ArrayAdapter<AuctionItem> {
-
+public class ActiveBidsAdapter extends ArrayAdapter<AuctionItem> {
     LayoutInflater layoutinflater;
     Context context;
     ArrayList<AuctionItem> auctionItems;
     int layoutResID;
 
-    public ActiveAuctionsAdapter(Context context, int resource, ArrayList<AuctionItem> auctionItems) {
+    public ActiveBidsAdapter(Context context, int resource, ArrayList<AuctionItem> auctionItems) {
         super(context, resource, auctionItems);
         this.context = context;
         layoutinflater = LayoutInflater.from(context);
@@ -47,7 +47,6 @@ public class ActiveAuctionsAdapter extends ArrayAdapter<AuctionItem> {
             viewHolder.highestBidderTextView = (TextView) view.findViewById(R.id.itemHighestBidderTextView);
             viewHolder.timeLeftTextView = (TextView) view.findViewById(R.id.timeLeftTextView);
 
-
             view.setTag(viewHolder);
 
         } else {
@@ -55,7 +54,7 @@ public class ActiveAuctionsAdapter extends ArrayAdapter<AuctionItem> {
 
         }
 
-        AuctionItem auctionItem = (AuctionItem) this.auctionItems.get(position);
+        AuctionItem auctionItem = auctionItems.get(position);
 
         viewHolder.itemName.setText(auctionItem.getName());
         if (auctionItem.highest_bidder.equalsIgnoreCase(auctionItem.created_by)) {
@@ -69,7 +68,6 @@ public class ActiveAuctionsAdapter extends ArrayAdapter<AuctionItem> {
             viewHolder.timeLeftTextView.setText(24 + " hours left");
         }
         viewHolder.priceTextView.setText(String.valueOf(auctionItem.getHighest_bid()) + " $");
-
 
         return view;
     }

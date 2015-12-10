@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         progressView = findViewById(R.id.login_progress);
 
 
-        if(!prefs.getString("currentUser","noUser").equalsIgnoreCase("noUser")){
+        if (!prefs.getString("currentUser", "noUser").equalsIgnoreCase("noUser")) {
             finish();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
@@ -177,15 +177,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = emailView.getText().toString();
         String password = passwordView.getText().toString();
 
-        UserItem newUser = new UserItem();
-        newUser.username = username;
-        newUser.password = password;
-        newUser.email = email;
-        newUser.all_bids = new ArrayList<Integer>();
-
-        db.addUserItem(newUser);
-
-
         boolean cancel = false;
         View focusView = null;
 
@@ -226,10 +217,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+//            UserItem newUser = new UserItem();
+//            newUser.username = username;
+//            newUser.password = password;
+//            newUser.email = email;
+//            newUser.all_bids = new ArrayList<Integer>();
+//
+//            db.addUserItem(newUser);
+
             showProgress(true);
             mAuthTask = new UserLoginTask(username, email, password);
             mAuthTask.execute((Void) null);
         }
+
+
+
     }
 
     private boolean isEmailValid(String email) {
@@ -380,15 +382,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             //Checks if the user already exists
             UserItem user = db.getUserItem(username);
-            if (user.username != null) {
+            if (user != null) {
 
                 if (user.username.equalsIgnoreCase(username) && user.email.equalsIgnoreCase(email) && user.password.equalsIgnoreCase(password)) {
                     prefs.putString("currentUser", user.username);
                     return true;
-                } else if (!user.email.equalsIgnoreCase(email) || !user.password.equalsIgnoreCase(password)){
+                } else if (!user.email.equalsIgnoreCase(email) || !user.password.equalsIgnoreCase(password)) {
                     return false;
-                }
-                else {
+                } else {
                     return false;
                 }
 

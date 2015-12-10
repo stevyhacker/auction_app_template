@@ -8,12 +8,14 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crossover.auctionproject.R;
@@ -27,14 +29,14 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ActiveAuctionsFragment extends Fragment {
+public class AllAuctionsFragment extends Fragment {
     ListView activeAuctionsListView;
-    ActiveAuctionsAdapter adapter;
+    AllAuctionsAdapter adapter;
     ArrayList<AuctionItem> auctionItemList;
     PreferencesHelper prefs;
     DatabaseAdapter db;
 
-    public ActiveAuctionsFragment() {
+    public AllAuctionsFragment() {
     }
 
     @Override
@@ -53,11 +55,15 @@ public class ActiveAuctionsFragment extends Fragment {
         prefs = new PreferencesHelper(getActivity());
         db = new DatabaseAdapter(getActivity());
         activeAuctionsListView = (ListView) view.findViewById(R.id.activeAuctionsListView);
+        TextView emptyAuctionTextView = (TextView) view.findViewById(R.id.bidding_items_list_empty);
+
+
         auctionItemList = new ArrayList<AuctionItem>();
         auctionItemList = db.getAvailableAuctions(prefs.getString("currentUser", "noUser"));
 
-        adapter = new ActiveAuctionsAdapter(getActivity(), R.layout.active_auctions_item,
+        adapter = new AllAuctionsAdapter(getActivity(), R.layout.active_auctions_item,
                 auctionItemList);
+        activeAuctionsListView.setEmptyView(emptyAuctionTextView);
         activeAuctionsListView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
@@ -87,12 +93,22 @@ public class ActiveAuctionsFragment extends Fragment {
                             UserItem user = db.getUserItem(prefs.getString("currentUser", "noUser"));
                             ArrayList<Integer> allbids = user.getAll_bids();
                             allbids.add(auctionItem.getId());
+
+                            for (Integer ints : allbids) {
+                                Log.e("ITEM DBG this all_bids", String.valueOf(ints));
+                                Toast.makeText(getContext(), "AUCTION ITEM NAME " + String.valueOf(ints), Toast.LENGTH_SHORT).show();
+                            }
+
                             user.setAll_bids(allbids);
+                            for (Integer ints : user.all_bids) {
+                                Log.e("ITEM DBG user.all_bids", String.valueOf(ints));
+                                Toast.makeText(getContext(), "AUCTION ITEM NAME " + String.valueOf(ints), Toast.LENGTH_SHORT).show();
+                            }
+
                             db.updateUserItem(user);
 
                             db.updateAuctionItem(auctionItem);
                             adapter.notifyDataSetChanged();
-                            //TODO ADD EVERY BIDDED AUCTION TO MY AUCTIONS USER ARRAY
                             dialog.dismiss();
 
                         } else {

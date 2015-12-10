@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusableInTouchMode="true"
-                tools:context=".app.AllAuctionsFragment">
+                tools:context=".app.ActiveBidsFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,11 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="No active auctions at the moment."
+            android:text="You have not bidded any auction yet."
             android:textColor="#000"/>
 
         <ListView
-            android:id="@+id/activeAuctionsListView"
+            android:id="@+id/activeBidsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"

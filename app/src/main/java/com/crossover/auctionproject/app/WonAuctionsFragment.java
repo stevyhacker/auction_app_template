@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.crossover.auctionproject.R;
 import com.crossover.auctionproject.database.AuctionItem;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  */
 public class WonAuctionsFragment extends Fragment {
 
-    ListView activeAuctionsListView;
+    ListView wonAuctionsListView;
     WonAuctionsAdapter adapter;
     ArrayList<AuctionItem> auctionItemList;
     PreferencesHelper prefs;
@@ -44,26 +45,23 @@ public class WonAuctionsFragment extends Fragment {
 
         prefs = new PreferencesHelper(getActivity());
         db = new DatabaseAdapter(getActivity());
-        activeAuctionsListView = (ListView) view.findViewById(R.id.wonAuctionsListView);
+        wonAuctionsListView = (ListView) view.findViewById(R.id.wonAuctionsListView);
         auctionItemList = new ArrayList<AuctionItem>();
         auctionItemList = db.getWonAuctions(prefs.getString("currentUser", "noUser"));
-
+        TextView emptyAuctionTextView = (TextView) view.findViewById(R.id.bidding_items_list_empty);
+        wonAuctionsListView.setAdapter(adapter);
         adapter = new WonAuctionsAdapter(getActivity(), R.layout.won_auctions_item,
                 auctionItemList);
-        activeAuctionsListView.setAdapter(adapter);
+        wonAuctionsListView.setAdapter(adapter);
 
 
         adapter.notifyDataSetChanged();
 
 
-        activeAuctionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        wonAuctionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //todo add bidding
-//                Intent intent = new Intent(getActivity(), SingleAuctionItemActivity.class);
-//
-//                intent.putExtra("id", auctionItemList.get(position).getId());
-//                startActivity(intent);
+
             }
         });
 
@@ -86,7 +84,7 @@ public class WonAuctionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(getString(R.string.active_auctions));
+        getActivity().setTitle(getString(R.string.won_auctions));
 
     }
 

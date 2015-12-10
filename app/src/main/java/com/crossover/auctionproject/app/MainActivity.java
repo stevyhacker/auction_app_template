@@ -162,10 +162,10 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
 
-            ActiveAuctionsFragment activeAuctionsFragment = new ActiveAuctionsFragment();
-            activeAuctionsFragment.setArguments(getIntent().getExtras());
+            AllAuctionsFragment allAuctionsFragment = new AllAuctionsFragment();
+            allAuctionsFragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, activeAuctionsFragment).commit();
+                    .add(R.id.fragment_container, allAuctionsFragment).commit();
             setTitle(getString(R.string.active_auctions));
 
         }
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.all_auctions) {
-            Fragment activeAuctionsFragment = new ActiveAuctionsFragment();
+            Fragment activeAuctionsFragment = new AllAuctionsFragment();
             setTitle(getString(R.string.active_auctions));
 
 
