@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crossover.auctionproject.R;
+import com.crossover.auctionproject.database.AuctionItem;
 import com.crossover.auctionproject.database.DatabaseAdapter;
 import com.crossover.auctionproject.database.UserItem;
 
@@ -231,7 +232,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
 
-
     }
 
     private boolean isEmailValid(String email) {
@@ -402,6 +402,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 newUser.all_bids = new ArrayList<Integer>();
 
                 db.addUserItem(newUser);
+
+                //Demo data
+                if (db.getUserItem("DemoUser")==null) {
+                    UserItem sampleUser = new UserItem();
+                    sampleUser.username = "DemoUser";
+                    sampleUser.password = "demonstration";
+                    sampleUser.email = "demo@user.com";
+                    sampleUser.all_bids = new ArrayList<Integer>();
+                    db.addUserItem(sampleUser);
+
+                    AuctionItem item1 = new AuctionItem();
+                    item1.hours_active = 5;
+                    item1.starting_price = 10;
+                    item1.highest_bid =10;
+                    item1.highest_bidder = sampleUser.username;
+                    item1.name = "DemoAuction";
+                    item1.created_by = sampleUser.username;
+
+                    AuctionItem item2 = new AuctionItem();
+                    item2.hours_active = 15;
+                    item2.starting_price = 100;
+                    item2.highest_bid =100;
+                    item2.highest_bidder = sampleUser.username;
+                    item2.name = "DemoAuction2";
+                    item2.created_by = sampleUser.username;
+
+                    AuctionItem item3 = new AuctionItem();
+                    item3.hours_active = 8;
+                    item3.starting_price = 1.5;
+                    item3.highest_bid =1.5;
+                    item3.highest_bidder = sampleUser.username;
+                    item3.name = "DemoAuction3";
+                    item3.created_by = sampleUser.username;
+
+                    db.addAuctionItem(item1);
+                    db.addAuctionItem(item2);
+                    db.addAuctionItem(item3);
+
+                }
 
                 prefs.putString("currentUser", newUser.username);
 

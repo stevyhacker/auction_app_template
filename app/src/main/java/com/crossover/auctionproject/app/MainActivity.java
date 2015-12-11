@@ -180,19 +180,22 @@ public class MainActivity extends AppCompatActivity
 
 
     //Handler for time
-    private int hourInterval = 60*60*1000;
+    private int hourInterval = 60 * 60 * 1000;
     private Handler timeHandler;
-
+    boolean runFirstTime = false;
     Runnable hourChecker = new Runnable() {
         @Override
         public void run() {
 
-           ArrayList<AuctionItem> auctions =  db.getAllAuctions();
-            for(AuctionItem auction : auctions){
-                auction.setHours_active(auction.getHours_active()-1);
-                db.updateAuctionItem(auction);
-            }
+            if (runFirstTime) {
+                ArrayList<AuctionItem> auctions = db.getAllAuctions();
+                for (AuctionItem auction : auctions) {
+                    auction.setHours_active((auction.getHours_active()) - 1);
+                    db.updateAuctionItem(auction);
+                }
 
+            }
+            runFirstTime = true;
             timeHandler.postDelayed(hourChecker, hourInterval);
         }
     };

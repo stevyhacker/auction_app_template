@@ -149,16 +149,21 @@ public class AllAuctionsFragment extends Fragment {
 
     private void randomBid() {
         ArrayList<AuctionItem> allAuctions = db.getAllAuctions();
-        Random random = new Random();
-        int randomInt = random.nextInt(allAuctions.size());
+        if (allAuctions.size() > 0) {
 
-        AuctionItem auctionItem = allAuctions.get(randomInt);
+            Random random = new Random();
+            int randomInt = random.nextInt(allAuctions.size());
 
-        auctionItem.setHighest_bid(auctionItem.getHighest_bid() + random.nextInt(10 - 5) + 5);
-        auctionItem.setHighest_bidder("internalBot");
+            AuctionItem auctionItem = allAuctions.get(randomInt);
 
-        db.updateAuctionItem(auctionItem);
+            auctionItem.setHighest_bid(auctionItem.getHighest_bid() + random.nextInt(10 - 5) + 5);
+            auctionItem.setHighest_bidder("internalBot");
+
+            db.updateAuctionItem(auctionItem);
+
+        }
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
